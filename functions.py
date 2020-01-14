@@ -24,15 +24,11 @@ def getClassIDs(ID):
 		classIDs.append(row[0])
 	return classIDs
 
-def getClassInfo(ID):
+def getClassInfo(classID):
 	global connection
 	global cursor
-	info = []
-	classIDs = getClassIDs(ID)
-	for ids in classIDs:
-		cursor.execute("SELECT * FROM Classes WHERE ID=" + str(ids) + ";")
-		info.append(cursor.fetchall()[0])
-	return info
+	cursor.execute("SELECT * FROM Classes WHERE ID=" + str(classID) + ";")
+	return cursor.fetchall()[0]
 
 #Announcement Functions
 def getAnnouncements(classes, sdate='1970-01-01 00:00:00', edate='', count=50):
