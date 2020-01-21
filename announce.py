@@ -1,16 +1,48 @@
 #!/usr/bin/python3
-import cgi
+import cgi, cgitb
 import xml.etree.ElementTree as ET
 import functions as fun
-import datetime
-
-ID = 20207065
-User = 'xxxx'
-Pass = 'some pass'
+from datetime import datetime
+import os, sys
 
 fun.init()
+print ("Content-type:text/xml\r\n\r\n")
+
+form = cgi.FieldStorage()
+
+username = form.getvalue('username')
+password = form.getvalue('password')
+
+
+user = fun.getUser(username,password)
+
+if user == None:
+	print ("<error>Username and Password do not match up</error>")
+	sys.exit()
+
+if user[3] == 1:
+	ID = user[4]
+elif user[3] == 2:
+	ID = form.getvalue('ID')
+	if ID == None:
+		print('<error>No Student ID Given On Teacher Account</error>')
+		sys.exit()
+
+sdate = form.getvalue("sdate")
+edate = form.getvalue("edate")
+count = form.getvalue("count")
+
+if sdate == None or edate == 'None':
+	sdate = '1970-01-01 00:00:00'
+
+if edate == None or edate == 'None':
+	edate = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+if count == None or count == 'None':
+	count = 50
+
 classList = fun.getClassIDs(ID)
-rawAnnounce = fun.getAnnouncements(classList)
+rawAnnounce = fun.getAnnouncements(classList, sdate, edate, count)
 
 root = ET.Element('Announcements')
 root.set('count',str(len(rawAnnounce)))
@@ -32,7 +64,7 @@ for raw in rawAnnounce:
 	
 tree = ET.ElementTree(root)
 
-print ("Content-type:text/xml\r\n\r\n")
+
 test = ET.tostring(root)
 print(str(test)[2:-1])
 

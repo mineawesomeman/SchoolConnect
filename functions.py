@@ -40,3 +40,7 @@ def getAnnouncements(classes, sdate='1970-01-01 00:00:00', edate='', count=50):
 	classString = classString + "))"
 	cursor.execute("SELECT * FROM Announcements WHERE " + classString + " AND (Time BETWEEN \"" + sdate + "\" AND \"" + edate + "\") ORDER BY Time DESC LIMIT " + str(count) + ";")
 	return cursor.fetchall()
+	
+def getUser(username, password):
+	cursor.execute("SELECT * FROM Accounts WHERE Username=\"" + str(username) + "\" AND Password=\"" + str(password) + "\";")
+	return cursor.fetchone()
